@@ -1,10 +1,38 @@
 const { ApolloServer, gql } = require("apollo-server");
 
+const usuarios = [
+  {
+    id: 1,
+    nome: "teste 1",
+    email: "teste1@gmail.com",
+    idade: 21,
+  },
+  {
+    id: 2,
+    nome: "teste 2",
+    email: "teste2@gmail.com",
+    idade: 22,
+  },
+  {
+    id: 3,
+    nome: "teste 3",
+    email: "teste3@gmail.com",
+    idade: 23,
+  },
+];
+
 //Em typeDefs, o uso do ! é para dizer que o campo
 //é obrigatório no retorno, caso contrário, dará erro.
 
 const typeDefs = gql`
   scalar Date
+
+  type Produto {
+    nome: String!
+    preco: Float!
+    desconto: Float
+    precoComDesconto: Float
+  }
 
   type Usuario {
     id: ID!
@@ -20,10 +48,23 @@ const typeDefs = gql`
     ola: String!
     horaAtual: Date!
     usuarioLogado: Usuario
+    produtoEmDestaque: Produto
+    numerosMegaSena: [Int!]! #Retorna obrigatoriamente um array e seus elementos obrigatoriamente devem ser inteiros
+    usuarios: [Usuario]!
   }
 `;
 
 const resolvers = {
+  Produto: {
+    precoComDesconto(valor) {
+      return valor.preco - valor.preco * valor.desconto;
+    },
+  },
+  Usuario: {
+    salario(usuario) {
+      return usuario.salario_real;
+    },
+  },
   Query: {
     ola() {
       return "bom dia!";
@@ -37,9 +78,22 @@ const resolvers = {
         nome: "Luan Freire",
         email: "luancfreire@gmail.com",
         idade: 22,
-        salario: 200000000.43,
+        salario_real: 200000000.43,
         vip: true,
       };
+    },
+    produtoEmDestaque() {
+      return {
+        nome: "Notebook",
+        preco: 4890.8,
+        desconto: 0.15,
+      };
+    },
+    numerosMegaSena() {
+      return [4, 8, 13, 27, 33, 54];
+    },
+    usuarios() {
+      return usuarios;
     },
   },
 };
