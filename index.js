@@ -27,6 +27,12 @@ const usuarios = [
 const typeDefs = gql`
   scalar Date
 
+  type Mutation {
+    novoUsuario(nome: String,
+      email: String,
+      idade: Int): Usuario!
+  }
+
   type Produto {
     nome: String!
     preco: Float!
